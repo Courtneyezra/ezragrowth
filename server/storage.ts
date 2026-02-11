@@ -71,6 +71,14 @@ export interface Quote {
   selectedAt: Date | null;
   expiresAt: Date | null;
   createdAt: Date;
+  // Scheduling fields (Phase 3)
+  selectedDate?: Date | null;
+  schedulingTier?: string | null;
+  timeSlotType?: string | null;
+  exactTimeRequested?: string | null;
+  schedulingFeeInPence?: number | null;
+  isWeekendBooking?: boolean;
+  selectedTierPricePence?: number | null;
 }
 
 export interface Job {
@@ -120,6 +128,147 @@ export interface LandingPage {
   updatedAt: Date;
 }
 
+// Payment Link for instant payments
+export interface PaymentLink {
+  id: string;
+  contractorId: string;
+  quoteId: string | null;
+  invoiceId: string | null;
+  shortCode: string;
+  amountPence: number;
+  description: string | null;
+  customerName: string | null;
+  customerEmail: string | null;
+  customerPhone: string | null;
+  status: string; // 'active' | 'paid' | 'expired' | 'cancelled'
+  stripePaymentIntentId: string | null;
+  expiresAt: Date | null;
+  paidAt: Date | null;
+  paidByEmail: string | null;
+  createdAt: Date;
+}
+
+// Partner Application for accreditation
+export interface PartnerApplication {
+  id: string;
+  contractorId: string;
+  status: string;
+  insuranceStatus: string;
+  insuranceDocumentUrl: string | null;
+  insurancePolicyNumber: string | null;
+  insuranceExpiryDate: Date | null;
+  insuranceVerifiedAt: Date | null;
+  identityStatus: string;
+  identityDocumentUrl: string | null;
+  dbsCertificateUrl: string | null;
+  identityVerifiedAt: Date | null;
+  referencesStatus: string;
+  referencesVerifiedAt: Date | null;
+  trainingStatus: string;
+  trainingCompletedAt: Date | null;
+  agreementSignedAt: Date | null;
+  highvisSize: string | null;
+  activatedAt: Date | null;
+  adminNotes: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Client Reference for partner verification
+export interface ClientReference {
+  id: string;
+  applicationId: string;
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string | null;
+  jobDescription: string | null;
+  requestSentAt: Date | null;
+  requestToken: string | null;
+  responseReceivedAt: Date | null;
+  rating: number | null;
+  feedback: string | null;
+  wouldRecommend: boolean | null;
+  verified: boolean;
+  createdAt: Date;
+}
+
+// Training Module
+export interface TrainingModule {
+  id: string;
+  slug: string;
+  title: string;
+  description: string | null;
+  durationMinutes: number;
+  videoUrl: string | null;
+  thumbnailUrl: string | null;
+  quizQuestions: unknown; // Array of quiz questions
+  passThreshold: number;
+  orderIndex: number;
+  isRequired: boolean;
+  isActive: boolean;
+  createdAt: Date;
+}
+
+// Training Progress
+export interface TrainingProgress {
+  id: string;
+  contractorId: string;
+  moduleId: string;
+  startedAt: Date | null;
+  videoWatchedAt: Date | null;
+  completedAt: Date | null;
+  quizScore: number | null;
+  passed: boolean;
+  attempts: number;
+  createdAt: Date;
+}
+
+// Contractor Review
+export interface ContractorReview {
+  id: string;
+  contractorId: string;
+  customerName: string;
+  customerEmail: string | null;
+  quoteId: string | null;
+  jobId: string | null;
+  overallRating: number;
+  qualityRating: number | null;
+  timelinessRating: number | null;
+  communicationRating: number | null;
+  valueRating: number | null;
+  reviewText: string | null;
+  reviewToken: string | null;
+  isVerified: boolean;
+  isPublic: boolean;
+  isFeatured: boolean;
+  contractorResponse: string | null;
+  respondedAt: Date | null;
+  isApproved: boolean;
+  createdAt: Date;
+}
+
+// Invoice Token for client portal
+export interface InvoiceToken {
+  id: string;
+  invoiceId: string;
+  token: string;
+  viewCount: number;
+  lastViewedAt: Date | null;
+  expiresAt: Date | null;
+  createdAt: Date;
+}
+
+// Contractor Subscription
+export interface ContractorSubscription {
+  id: string;
+  contractorId: string;
+  tier: string;
+  partnerCommissionRate: number;
+  stripeCustomerId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // Storage
 class Storage {
   skus: SKU[] = [];
@@ -129,6 +278,14 @@ class Storage {
   jobs: Job[] = [];
   invoices: Invoice[] = [];
   landingPages: LandingPage[] = [];
+  paymentLinks: PaymentLink[] = [];
+  partnerApplications: PartnerApplication[] = [];
+  clientReferences: ClientReference[] = [];
+  trainingModules: TrainingModule[] = [];
+  trainingProgress: TrainingProgress[] = [];
+  contractorReviews: ContractorReview[] = [];
+  invoiceTokens: InvoiceToken[] = [];
+  contractorSubscriptions: ContractorSubscription[] = [];
 
   private landingPageIdCounter = 1;
 

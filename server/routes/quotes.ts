@@ -2,6 +2,7 @@ import { Router } from "express";
 import { storage } from "../storage";
 import { v4 as uuidv4 } from "uuid";
 import { generateValuePricingQuote, getSegmentTierConfig } from "../value-pricing-engine";
+import { assignContractor } from "../job-assignment";
 
 const router = Router();
 
@@ -182,8 +183,15 @@ router.post("/", (req, res) => {
 });
 
 // Select package on quote (client action)
-router.post("/:id/select", (req, res) => {
-  const { selectedPackage } = req.body;
+router.post("/:id/select", async (req, res) => {
+  const {
+    selectedPackage,
+    selectedDate,
+    timeSlotType,
+    exactTimeRequested,
+    schedulingFeeInPence,
+    schedulingTier,
+  } = req.body;
 
   if (!["essential", "hassleFree", "highStandard"].includes(selectedPackage)) {
     return res.status(400).json({ error: "Invalid package selection" });
@@ -194,17 +202,92 @@ router.post("/:id/select", (req, res) => {
     return res.status(404).json({ error: "Quote not found" });
   }
 
-  storage.quotes[index].selectedPackage = selectedPackage;
-  storage.quotes[index].selectedAt = new Date();
+  const quote = storage.quotes[index];
+
+  // Update quote with selection and scheduling info
+  quote.selectedPackage = selectedPackage;
+  quote.selectedAt = new Date();
+
+  // Persist scheduling data (Phase 3)
+  if (selectedDate) {
+    (quote as any).selectedDate = new Date(selectedDate);
+  }
+  if (timeSlotType) {
+    (quote as any).timeSlotType = timeSlotType;
+  }
+  if (exactTimeRequested) {
+    (quote as any).exactTimeRequested = exactTimeRequested;
+  }
+  if (schedulingFeeInPence !== undefined) {
+    (quote as any).schedulingFeeInPence = schedulingFeeInPence;
+  }
+  if (schedulingTier) {
+    (quote as any).schedulingTier = schedulingTier;
+  }
+
+  // Check if weekend booking
+  if (selectedDate) {
+    const date = new Date(selectedDate);
+    const dayOfWeek = date.getDay();
+    (quote as any).isWeekendBooking = dayOfWeek === 0 || dayOfWeek === 6;
+  }
+
+  // Calculate selected tier price for reference
+  let selectedTierPricePence = 0;
+  switch (selectedPackage) {
+    case "essential":
+      selectedTierPricePence = quote.essentialPrice;
+      break;
+    case "hassleFree":
+      selectedTierPricePence = quote.enhancedPrice;
+      break;
+    case "highStandard":
+      selectedTierPricePence = quote.elitePrice;
+      break;
+  }
+  (quote as any).selectedTierPricePence = selectedTierPricePence;
 
   // Update lead status
-  const lead = storage.leads.find((l) => l.phone === storage.quotes[index].phone);
+  const lead = storage.leads.find((l) => l.phone === quote.phone);
   if (lead) {
     lead.status = "booked";
     lead.updatedAt = new Date();
   }
 
-  res.json(storage.quotes[index]);
+  // Phase 6: Auto-assign contractor when date is selected
+  let assignmentResult = null;
+  if (selectedDate && timeSlotType) {
+    try {
+      assignmentResult = await assignContractor({
+        quoteId: quote.id,
+        customerName: quote.customerName,
+        customerPhone: quote.phone,
+        address: quote.address || undefined,
+        postcode: quote.postcode || undefined,
+        jobDescription: quote.jobDescription,
+        selectedDate: new Date(selectedDate),
+        timeSlotType: timeSlotType as "am" | "pm" | "full" | "exact",
+        exactTimeRequested: exactTimeRequested,
+        payoutPence: selectedTierPricePence,
+      });
+
+      if (assignmentResult.success) {
+        (quote as any).assignedContractorId = assignmentResult.contractorId;
+        (quote as any).assignedJobId = assignmentResult.jobId;
+        console.log(`[QUOTES] Auto-assigned job ${assignmentResult.jobId} to contractor ${assignmentResult.contractorId}`);
+      } else {
+        console.log(`[QUOTES] Auto-assignment failed: ${assignmentResult.reason}`);
+      }
+    } catch (error) {
+      console.error("[QUOTES] Error during auto-assignment:", error);
+      // Don't fail the booking if assignment fails - can be manually assigned later
+    }
+  }
+
+  res.json({
+    ...quote,
+    assignment: assignmentResult,
+  });
 });
 
 // Get segment tier config (for UI display)

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LayoutDashboard, PhoneCall, Bell, HelpCircle, Package, DollarSign, Menu, Megaphone, FileText, Briefcase } from "lucide-react";
+import { LayoutDashboard, PhoneCall, Bell, HelpCircle, Package, DollarSign, Menu, Megaphone, FileText, Briefcase, CalendarDays } from "lucide-react";
 
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Link, useLocation } from "wouter";
@@ -62,6 +62,7 @@ export default function SidebarLayout({ children }: SidebarLayoutProps) {
                         {
                             title: "MANAGEMENT",
                             items: [
+                                { icon: CalendarDays, label: "Availability", href: "/admin/availability" },
                                 { icon: PhoneCall, label: "Call Log", href: "/admin/calls" },
                                 { icon: Package, label: "SKU Manager", href: "/admin/skus" },
                                 { icon: Megaphone, label: "Marketing", href: "/admin/marketing" },
@@ -134,6 +135,7 @@ export default function SidebarLayout({ children }: SidebarLayoutProps) {
                                 { label: "Quotes", href: "/admin/quotes" },
                                 { label: "Jobs", href: "/admin/jobs" },
                                 { label: "Invoices", href: "/admin/invoices" },
+                                { label: "Availability", href: "/admin/availability" },
                                 { label: "Call Log", href: "/admin/calls" },
                                 { label: "SKU Manager", href: "/admin/skus" },
                                 { label: "Marketing", href: "/admin/marketing" },

@@ -17,7 +17,19 @@ const QuotesPage = lazy(() => import("@/pages/admin/QuotesPage"));
 const GenerateQuote = lazy(() => import("@/pages/admin/GenerateQuoteLinkSimple"));
 const InvoicesPage = lazy(() => import("@/pages/admin/InvoicesPage"));
 const MarketingPage = lazy(() => import("@/pages/admin/MarketingPage"));
+const MasterAvailabilityPage = lazy(() => import("@/pages/admin/MasterAvailabilityPage"));
+const ContractorCalendarPage = lazy(() => import("@/pages/contractor/CalendarPage"));
 const QuoteView = lazy(() => import("@/pages/QuoteView"));
+
+// Pitch/Sales Pages
+const PitchIndex = lazy(() => import("@/pages/pitch/PitchIndex"));
+const CustomerJourney = lazy(() => import("@/pages/pitch/CustomerJourney"));
+const ROICalculator = lazy(() => import("@/pages/pitch/ROICalculator"));
+const Roadmap = lazy(() => import("@/pages/pitch/Roadmap"));
+const CompetitorAnalysis = lazy(() => import("@/pages/pitch/CompetitorAnalysis"));
+
+// Proposal Pages
+const RooketradeProposal = lazy(() => import("@/pages/proposal/RooketradeProposal"));
 
 // Loading fallback
 function LoadingFallback() {
@@ -37,6 +49,16 @@ function Router() {
           <HandymanLanding />
         </Route>
         <Route path="/quote/:slug" component={QuoteView} />
+
+        {/* Pitch/Sales Presentation Pages */}
+        <Route path="/pitch" component={PitchIndex} />
+        <Route path="/pitch/journey" component={CustomerJourney} />
+        <Route path="/pitch/roi" component={ROICalculator} />
+        <Route path="/pitch/roadmap" component={Roadmap} />
+        <Route path="/pitch/competitors" component={CompetitorAnalysis} />
+
+        {/* Proposal Pages */}
+        <Route path="/proposal/rooketrade" component={RooketradeProposal} />
 
         {/* Admin Routes */}
         <Route path="/admin">
@@ -73,6 +95,16 @@ function Router() {
           <SidebarLayout>
             <MarketingPage />
           </SidebarLayout>
+        </Route>
+        <Route path="/admin/availability">
+          <SidebarLayout>
+            <MasterAvailabilityPage />
+          </SidebarLayout>
+        </Route>
+
+        {/* Contractor Routes */}
+        <Route path="/contractor/calendar">
+          <ContractorCalendarPage />
         </Route>
 
         {/* Default redirect */}

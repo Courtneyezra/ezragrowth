@@ -66,6 +66,26 @@ app.use("/api/invoices", invoiceRouter);
 import landingPageRouter from "./routes/landing-pages";
 app.use("/api/landing-pages", landingPageRouter);
 
+// Availability Routes
+import availabilityRouter from "./routes/availability";
+app.use("/api/availability", availabilityRouter);
+
+// Payment Links Routes (Freemium)
+import paymentLinksRouter from "./routes/payment-links";
+app.use("/api/payment-links", paymentLinksRouter);
+
+// Client Portal Routes (Freemium)
+import clientPortalRouter from "./routes/client-portal";
+app.use("/api/client-portal", clientPortalRouter);
+
+// Partner Application Routes (Freemium)
+import partnerApplicationRouter from "./routes/partner-application";
+app.use("/api/partner-application", partnerApplicationRouter);
+
+// Training Routes (Freemium)
+import trainingRouter from "./routes/training";
+app.use("/api/training", trainingRouter);
+
 // ==========================================
 // STATIC FILE SERVING (Production)
 // ==========================================
