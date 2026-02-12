@@ -90,11 +90,15 @@ app.use("/api/training", trainingRouter);
 // STATIC FILE SERVING (Production)
 // ==========================================
 
+// Serve bahnbao folder (Valentine's page)
+const bahnbaoPath = path.resolve(__dirname, "../bahnbao");
+app.use("/bahnbao", express.static(bahnbaoPath));
+
 if (process.env.NODE_ENV === "production") {
   const publicPath = path.resolve(__dirname, "../dist/public");
   app.use(express.static(publicPath));
   app.get("/{*splat}", (req, res) => {
-    if (!req.path.startsWith("/api")) {
+    if (!req.path.startsWith("/api") && !req.path.startsWith("/bahnbao")) {
       res.sendFile(path.join(publicPath, "index.html"));
     }
   });
