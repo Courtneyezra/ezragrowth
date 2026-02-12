@@ -93,7 +93,7 @@ app.use("/api/training", trainingRouter);
 if (process.env.NODE_ENV === "production") {
   const publicPath = path.resolve(__dirname, "../dist/public");
   app.use(express.static(publicPath));
-  app.get("*", (req, res) => {
+  app.get("/{*splat}", (req, res) => {
     if (!req.path.startsWith("/api")) {
       res.sendFile(path.join(publicPath, "index.html"));
     }
