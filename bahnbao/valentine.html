@@ -246,6 +246,15 @@
     .flip-card-front {
       background: linear-gradient(135deg, var(--muted-red) 0%, var(--deep-red) 100%);
       font-size: 3rem;
+      flex-direction: column;
+    }
+
+    .tap-hint {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.8);
+      margin-top: 0.5rem;
+      font-family: 'Indie Flower', cursive;
+      animation: pulse 2s infinite;
     }
 
     .flip-card-back {
@@ -1406,7 +1415,7 @@
       <div class="flip-cards-grid single">
         <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
-            <div class="flip-card-front">&#129509;</div>
+            <div class="flip-card-front">&#129509;<span class="tap-hint">tap me</span></div>
             <div class="flip-card-back">
               <div class="memory-title">The Hoodie Drop</div>
               Her hoodie fell from the top bunk. He handed it back with a smile. That simple moment started it all.
@@ -1452,7 +1461,7 @@
       <div class="flip-cards-grid double">
         <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
-            <div class="flip-card-front">&#128241;</div>
+            <div class="flip-card-front">&#128241;<span class="tap-hint">tap me</span></div>
             <div class="flip-card-back">
               <div class="memory-title">Instagram Nights</div>
               Messaging all night, hearts racing, right next to each other but worlds apart.
@@ -1461,7 +1470,7 @@
         </div>
         <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
-            <div class="flip-card-front">&#128080;</div>
+            <div class="flip-card-front">&#128080;<span class="tap-hint">tap me</span></div>
             <div class="flip-card-back">
               <div class="memory-title">Hands Through Curtains</div>
               Reaching outside their bunk curtains to hold hands in the middle. Pure magic.
@@ -1493,7 +1502,7 @@
       <div class="flip-cards-grid double">
         <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
-            <div class="flip-card-front">&#9749;</div>
+            <div class="flip-card-front">&#9749;<span class="tap-hint">tap me</span></div>
             <div class="flip-card-back">
               <div class="memory-title">Coffee Shop Days</div>
               Working side by side, stealing glances, falling deeper with every moment.
@@ -1502,7 +1511,7 @@
         </div>
         <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
-            <div class="flip-card-front">&#127921;</div>
+            <div class="flip-card-front">&#127921;<span class="tap-hint">tap me</span></div>
             <div class="flip-card-back">
               <div class="memory-title">Pool Nights</div>
               Evenings at the pool table, laughing, competing, connecting.
@@ -1534,7 +1543,7 @@
       <div class="flip-cards-grid single">
         <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
-            <div class="flip-card-front">&#10084;&#65039;</div>
+            <div class="flip-card-front">&#10084;&#65039;<span class="tap-hint">tap me</span></div>
             <div class="flip-card-back">
               <div class="memory-title">Hi4 Coffee</div>
               "Sit closer." Two words that changed everything. This was real.
@@ -1592,7 +1601,7 @@
       <div class="flip-cards-grid single">
         <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
-            <div class="flip-card-front">&#128756;</div>
+            <div class="flip-card-front">&#128756;<span class="tap-hint">tap me</span></div>
             <div class="flip-card-back">
               <div class="memory-title">Hands in Hoodie Pockets</div>
               Riding through the warm Vietnam night, her hands in his hoodie pockets, hearts beating as one.
@@ -2048,7 +2057,7 @@
       <div class="flip-cards-grid double">
         <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
-            <div class="flip-card-front">&#127481;&#127479;</div>
+            <div class="flip-card-front">🇫🇷<span class="tap-hint">tap me</span></div>
             <div class="flip-card-back">
               <div class="memory-title">Paris</div>
               Where my French girl lives. The city of love suits her perfectly.
@@ -2057,7 +2066,7 @@
         </div>
         <div class="flip-card" onclick="flipCard(this)">
           <div class="flip-card-inner">
-            <div class="flip-card-front">&#127468;&#127463;</div>
+            <div class="flip-card-front">🇬🇧<span class="tap-hint">tap me</span></div>
             <div class="flip-card-back">
               <div class="memory-title">England</div>
               Where I count down every moment until I see her again.
