@@ -1313,6 +1313,156 @@
       50% { opacity: 0.5; transform: translateX(-50%) scale(1.3); }
     }
 
+    /* ==================== */
+    /* INTRO ANIMATION */
+    /* ==================== */
+    .intro-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      z-index: 2800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+
+    .intro-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .intro-overlay.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .intro-hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .intro-floating-heart {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0;
+      animation: floatUp 4s ease-in-out forwards;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .intro-content {
+      text-align: center;
+      z-index: 1;
+    }
+
+    .intro-line {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      color: rgba(255,255,255,0.9);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .intro-line-1 {
+      animation: fadeSlideUp 1s ease forwards;
+      animation-delay: 0.3s;
+    }
+
+    .intro-line-2 {
+      animation: fadeSlideUp 1s ease forwards;
+      animation-delay: 0.8s;
+      margin-bottom: 1rem;
+    }
+
+    .intro-heart-big {
+      font-size: clamp(3rem, 10vw, 5rem);
+      opacity: 0;
+      transform: scale(0);
+      animation: heartPop 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+      animation-delay: 1.5s;
+    }
+
+    .intro-names {
+      margin-top: 1rem;
+      opacity: 0;
+      animation: fadeSlideUp 1s ease forwards;
+      animation-delay: 2s;
+    }
+
+    .intro-name {
+      font-family: 'Pacifico', cursive;
+      font-size: clamp(2rem, 8vw, 4rem);
+      color: var(--soft-pink);
+      display: inline-block;
+    }
+
+    .intro-and {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      color: rgba(255,255,255,0.8);
+      margin: 0 0.5rem;
+    }
+
+    .intro-scroll {
+      margin-top: 3rem;
+      opacity: 0;
+      animation: fadeSlideUp 1s ease forwards, bounce 2s ease-in-out infinite;
+      animation-delay: 3s, 4s;
+      color: rgba(255,255,255,0.7);
+      font-size: 1.1rem;
+    }
+
+    .scroll-arrow {
+      font-size: 1.5rem;
+      margin-top: 0.5rem;
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+
+    @keyframes fadeSlideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes heartPop {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
     @media (max-width: 600px) {
       .camera-preview {
         width: 100px;
@@ -1353,6 +1503,25 @@
       <video id="cameraVideo" autoplay muted playsinline></video>
     </div>
     <div class="recording-indicator"></div>
+  </div>
+
+  <!-- Intro Animation Overlay -->
+  <div class="intro-overlay" id="introOverlay">
+    <div class="intro-hearts" id="introHearts"></div>
+    <div class="intro-content">
+      <div class="intro-line intro-line-1">A love story</div>
+      <div class="intro-line intro-line-2">written in the stars...</div>
+      <div class="intro-heart-big">💕</div>
+      <div class="intro-names">
+        <span class="intro-name">Courtnee</span>
+        <span class="intro-and">&</span>
+        <span class="intro-name">Celine</span>
+      </div>
+      <div class="intro-scroll">
+        <span>Scroll down to begin</span>
+        <div class="scroll-arrow">↓</div>
+      </div>
+    </div>
   </div>
 
   <!-- Stars Background -->
@@ -2333,6 +2502,9 @@
         document.getElementById('cameraPrompt').classList.add('hidden');
         document.getElementById('cameraPreview').classList.add('show');
 
+        // Show intro animation
+        showIntroAnimation();
+
         // Detect supported MIME type (Safari doesn't support webm)
         let mimeType = 'video/webm';
         let fileExt = 'webm';
@@ -2402,6 +2574,55 @@
 
     function skipRecording() {
       document.getElementById('cameraPrompt').classList.add('hidden');
+      showIntroAnimation();
+    }
+
+    function showIntroAnimation() {
+      const overlay = document.getElementById('introOverlay');
+      const heartsContainer = document.getElementById('introHearts');
+
+      // Show overlay
+      overlay.classList.add('show');
+
+      // Create floating hearts
+      const hearts = ['💕', '💖', '💗', '💓', '💘', '❤️', '💝', '✨'];
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.className = 'intro-floating-heart';
+          heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+          heart.style.left = Math.random() * 100 + '%';
+          heart.style.animationDuration = (3 + Math.random() * 2) + 's';
+          heart.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+          heartsContainer.appendChild(heart);
+
+          // Remove after animation
+          setTimeout(() => heart.remove(), 5000);
+        }, i * 200);
+      }
+
+      // Listen for scroll to dismiss intro
+      let introScrollHandler = () => {
+        if (window.scrollY > 50) {
+          overlay.classList.add('fade-out');
+          setTimeout(() => {
+            overlay.style.display = 'none';
+          }, 1000);
+          window.removeEventListener('scroll', introScrollHandler);
+        }
+      };
+
+      // Also allow clicking/tapping to dismiss after 3.5 seconds
+      setTimeout(() => {
+        overlay.addEventListener('click', () => {
+          overlay.classList.add('fade-out');
+          setTimeout(() => {
+            overlay.style.display = 'none';
+          }, 1000);
+          window.removeEventListener('scroll', introScrollHandler);
+        });
+        window.addEventListener('scroll', introScrollHandler);
+      }, 3500);
     }
 
 
