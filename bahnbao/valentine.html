@@ -2182,8 +2182,8 @@
     </section>
 
     <!-- Greedy Video Overlay -->
-    <div class="video-popup-overlay" id="greedyVideoOverlay" onclick="hideGreedyVideo(event)">
-      <div class="video-popup-content">
+    <div class="video-popup-overlay" id="greedyVideoOverlay" onclick="hideGreedyVideo()">
+      <div class="video-popup-content" onclick="event.stopPropagation()">
         <div class="video-popup-title">PROOF! 🍕😂</div>
         <video id="greedyVideo" playsinline controls>
           <source src="media/greedy_proof.MP4" type="video/mp4">
@@ -2701,13 +2701,10 @@
       document.getElementById('greedyVideo').play();
     }
 
-    function hideGreedyVideo(event) {
-      // Only close if clicking outside the video content
-      if (event.target.id === 'greedyVideoOverlay') {
-        document.getElementById('greedyVideoOverlay').classList.remove('show');
-        document.getElementById('greedyVideo').pause();
-        document.getElementById('greedyVideo').currentTime = 0;
-      }
+    function hideGreedyVideo() {
+      document.getElementById('greedyVideoOverlay').classList.remove('show');
+      document.getElementById('greedyVideo').pause();
+      document.getElementById('greedyVideo').currentTime = 0;
     }
 
     function showIntroAnimation() {
