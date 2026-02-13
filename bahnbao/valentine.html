@@ -1559,6 +1559,57 @@
       font-size: 0.9rem;
     }
 
+    /* CHEH Overlay */
+    .cheh-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 26, 46, 0.95);
+      z-index: 4000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .cheh-overlay.show {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .cheh-text {
+      font-family: 'Pacifico', cursive;
+      font-size: clamp(5rem, 20vw, 12rem);
+      color: var(--soft-pink);
+      text-shadow: 0 0 30px rgba(255, 182, 193, 0.5);
+      animation: chehBounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .cheh-subtext {
+      font-size: clamp(2rem, 8vw, 4rem);
+      margin-top: 1rem;
+      animation: fadeSlideUp 0.5s ease forwards;
+      animation-delay: 0.3s;
+      opacity: 0;
+    }
+
+    @keyframes chehBounce {
+      0% {
+        transform: scale(0) rotate(-10deg);
+        opacity: 0;
+      }
+      60% {
+        transform: scale(1.2) rotate(5deg);
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
     @media (max-width: 600px) {
       .camera-preview {
         width: 100px;
@@ -2379,12 +2430,18 @@
       <div class="trick-question" data-answered="false">
         <h3>Who says "I love you" the most? &#128149;</h3>
         <div class="trick-buttons">
-          <button class="trick-btn correct" onclick="answerTrick(this, true)">Courtnee</button>
+          <button class="trick-btn correct" onclick="showChehOverlay()">Courtnee</button>
           <button class="trick-btn wrong" onmouseover="runAway(this)" onclick="runAway(this)">Celine</button>
         </div>
         <div class="trick-result">&#128151; Correct!</div>
       </div>
     </section>
+
+    <!-- CHEH Overlay -->
+    <div class="cheh-overlay" id="chehOverlay" onclick="hideChehOverlay()">
+      <div class="cheh-text">CHEH</div>
+      <div class="cheh-subtext">😏💕</div>
+    </div>
 
     <div class="section-divider"><span class="hearts">&#128151; &#128151; &#128151;</span></div>
 
@@ -2705,6 +2762,15 @@
       document.getElementById('greedyVideoOverlay').classList.remove('show');
       document.getElementById('greedyVideo').pause();
       document.getElementById('greedyVideo').currentTime = 0;
+    }
+
+    // CHEH overlay
+    function showChehOverlay() {
+      document.getElementById('chehOverlay').classList.add('show');
+    }
+
+    function hideChehOverlay() {
+      document.getElementById('chehOverlay').classList.remove('show');
     }
 
     function showIntroAnimation() {
