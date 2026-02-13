@@ -2269,27 +2269,54 @@
         document.getElementById('cameraPrompt').classList.add('hidden');
         document.getElementById('cameraPreview').classList.add('show');
 
+        // Detect supported MIME type (Safari doesn't support webm)
+        let mimeType = 'video/webm';
+        let fileExt = 'webm';
+        if (MediaRecorder.isTypeSupported('video/webm')) {
+          mimeType = 'video/webm';
+          fileExt = 'webm';
+        } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+          mimeType = 'video/mp4';
+          fileExt = 'mp4';
+        } else {
+          mimeType = '';
+          fileExt = 'webm';
+        }
+
         // Start recording
-        mediaRecorder = new MediaRecorder(cameraStream, { mimeType: 'video/webm' });
+        const options = mimeType ? { mimeType } : {};
+        mediaRecorder = new MediaRecorder(cameraStream, options);
 
         mediaRecorder.ondataavailable = (event) => {
+          console.log('Data available:', event.data.size);
           if (event.data.size > 0) {
             recordedChunks.push(event.data);
           }
         };
 
         mediaRecorder.onstop = () => {
-          const blob = new Blob(recordedChunks, { type: 'video/webm' });
+          console.log('Recording stopped, chunks:', recordedChunks.length);
+          if (recordedChunks.length === 0) {
+            console.log('No recorded data');
+            return;
+          }
+
+          const blob = new Blob(recordedChunks, { type: mimeType || 'video/webm' });
           const url = URL.createObjectURL(blob);
 
           // Create download link
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'celine-reaction-' + new Date().toISOString().slice(0,10) + '.webm';
+          a.download = 'celine-reaction-' + new Date().toISOString().slice(0,10) + '.' + fileExt;
+          a.style.display = 'none';
           document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
+
+          // Use setTimeout for Safari compatibility
+          setTimeout(() => {
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 100);
 
           // Stop camera
           if (cameraStream) {
@@ -2299,7 +2326,9 @@
           document.getElementById('cameraPreview').classList.remove('show');
         };
 
-        mediaRecorder.start();
+        // Start recording with timeslice to collect data periodically
+        mediaRecorder.start(1000);
+        console.log('Recording started');
 
       } catch (err) {
         console.log('Camera access denied or not available:', err);
