@@ -2695,18 +2695,18 @@
         // Show intro animation
         showIntroAnimation();
 
-        // Detect supported MIME type (Safari doesn't support webm)
-        let mimeType = 'video/webm';
-        let fileExt = 'webm';
-        if (MediaRecorder.isTypeSupported('video/webm')) {
-          mimeType = 'video/webm';
-          fileExt = 'webm';
-        } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+        // Detect supported MIME type - prefer mp4 for phone compatibility
+        let mimeType = 'video/mp4';
+        let fileExt = 'mp4';
+        if (MediaRecorder.isTypeSupported('video/mp4')) {
           mimeType = 'video/mp4';
           fileExt = 'mp4';
+        } else if (MediaRecorder.isTypeSupported('video/webm')) {
+          mimeType = 'video/webm';
+          fileExt = 'mp4'; // Still save as mp4 extension for compatibility
         } else {
           mimeType = '';
-          fileExt = 'webm';
+          fileExt = 'mp4';
         }
 
         // Start recording
