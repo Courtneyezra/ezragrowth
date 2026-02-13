@@ -374,11 +374,10 @@
 
     .video-item video {
       width: 350px;
-      height: auto;
+      height: 450px;
       display: block;
-      max-height: 500px;
-      object-fit: contain;
-      background: black;
+      object-fit: cover;
+      border-radius: 20px;
     }
 
     /* ==================== */
@@ -1156,6 +1155,8 @@
       .video-item video {
         width: 100%;
         max-width: 320px;
+        height: 400px;
+        object-fit: cover;
       }
       .lightbox-nav { display: none; }
       .trick-buttons { flex-direction: column; align-items: center; }
