@@ -1167,8 +1167,188 @@
       }
     }
   </style>
+    /* ==================== */
+    /* CAMERA RECORDING */
+    /* ==================== */
+    .camera-prompt {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 26, 46, 0.98);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .camera-prompt.hidden {
+      display: none;
+    }
+
+    .camera-prompt h2 {
+      font-family: 'Pacifico', cursive;
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      color: var(--soft-pink);
+      margin-bottom: 1rem;
+    }
+
+    .camera-prompt p {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 2rem;
+      max-width: 400px;
+    }
+
+    .camera-prompt-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .camera-btn {
+      padding: 1rem 2rem;
+      font-family: 'Indie Flower', cursive;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .camera-btn.yes {
+      background: linear-gradient(135deg, var(--muted-red) 0%, var(--deep-red) 100%);
+      color: white;
+      box-shadow: 0 5px 20px rgba(229, 115, 115, 0.4);
+    }
+
+    .camera-btn.yes:hover {
+      transform: scale(1.05);
+    }
+
+    .camera-btn.no {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .camera-preview {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 120px;
+      height: 160px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+      z-index: 2500;
+      border: 3px solid var(--muted-red);
+      display: none;
+    }
+
+    .camera-preview.show {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .camera-preview video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    .recording-indicator {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 12px;
+      height: 12px;
+      background: #e74c3c;
+      border-radius: 50%;
+      animation: recordingPulse 1s ease-in-out infinite;
+    }
+
+    @keyframes recordingPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .camera-controls {
+      position: fixed;
+      bottom: 190px;
+      left: 20px;
+      z-index: 2500;
+      display: none;
+    }
+
+    .camera-controls.show {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .camera-control-btn {
+      padding: 0.5rem 1rem;
+      font-family: 'Indie Flower', cursive;
+      font-size: 0.9rem;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      backdrop-filter: blur(10px);
+    }
+
+    .camera-control-btn:hover {
+      background: var(--muted-red);
+    }
+
+    @media (max-width: 600px) {
+      .camera-preview {
+        width: 80px;
+        height: 110px;
+        bottom: 10px;
+        left: 10px;
+      }
+      .camera-controls {
+        bottom: 130px;
+        left: 10px;
+      }
+      .camera-control-btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- Camera Permission Prompt -->
+  <div class="camera-prompt" id="cameraPrompt">
+    <h2>I want to see your reaction!</h2>
+    <p>Can I record you while you scroll through this? I'd love to see your face when you see all our memories together.</p>
+    <div class="camera-prompt-buttons">
+      <button class="camera-btn yes" onclick="startRecording()">Yes, record me! &#128248;</button>
+      <button class="camera-btn no" onclick="skipRecording()">Maybe later</button>
+    </div>
+  </div>
+
+  <!-- Camera Preview -->
+  <div class="camera-preview" id="cameraPreview">
+    <video id="cameraVideo" autoplay muted playsinline></video>
+    <div class="recording-indicator"></div>
+  </div>
+
+  <!-- Camera Controls -->
+  <div class="camera-controls" id="cameraControls">
+    <button class="camera-control-btn" onclick="stopAndSave()">Stop & Save &#128190;</button>
+  </div>
+
   <!-- Stars Background -->
   <div class="stars" id="stars"></div>
 
@@ -2081,6 +2261,74 @@
   </div>
 
   <script>
+    // ==================== CAMERA RECORDING ====================
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let cameraStream = null;
+
+    async function startRecording() {
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: 640, height: 480 },
+          audio: true
+        });
+
+        const video = document.getElementById('cameraVideo');
+        video.srcObject = cameraStream;
+
+        document.getElementById('cameraPrompt').classList.add('hidden');
+        document.getElementById('cameraPreview').classList.add('show');
+        document.getElementById('cameraControls').classList.add('show');
+
+        // Start recording
+        mediaRecorder = new MediaRecorder(cameraStream, { mimeType: 'video/webm' });
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: 'video/webm' });
+          const url = URL.createObjectURL(blob);
+
+          // Create download link
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'celine-reaction-' + new Date().toISOString().slice(0,10) + '.webm';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          // Stop camera
+          if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+          }
+
+          document.getElementById('cameraPreview').classList.remove('show');
+          document.getElementById('cameraControls').classList.remove('show');
+        };
+
+        mediaRecorder.start();
+
+      } catch (err) {
+        console.log('Camera access denied or not available:', err);
+        skipRecording();
+      }
+    }
+
+    function skipRecording() {
+      document.getElementById('cameraPrompt').classList.add('hidden');
+    }
+
+    function stopAndSave() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+    }
+
     // ==================== INITIALIZATION ====================
     document.addEventListener('DOMContentLoaded', () => {
       createStars();
