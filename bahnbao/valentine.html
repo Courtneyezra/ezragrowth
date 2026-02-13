@@ -1867,6 +1867,18 @@
       </div>
     </section>
 
+    <!-- SIMPLE MOMENTS VIDEO -->
+    <section class="section">
+      <p class="story-text">1 of many of our amazing simple moments</p>
+      <div class="video-gallery">
+        <div class="video-item">
+          <video playsinline muted loop class="auto-video" data-end="10">
+            <source src="media/IMG_0015.mov" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </section>
+
     <!-- TRICK QUESTION -->
     <section class="section">
       <div class="trick-question" data-answered="false">
@@ -2425,6 +2437,14 @@
         if (video.dataset.start) {
           video.addEventListener('loadedmetadata', () => {
             video.currentTime = parseFloat(video.dataset.start);
+          });
+        }
+        // Handle end time - reset to beginning when reaching end point
+        if (video.dataset.end) {
+          video.addEventListener('timeupdate', () => {
+            if (video.currentTime >= parseFloat(video.dataset.end)) {
+              video.currentTime = 0;
+            }
           });
         }
         videoObserver.observe(video);
