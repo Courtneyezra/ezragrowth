@@ -2780,6 +2780,11 @@
     function showGreedyVideo() {
       document.getElementById('greedyVideoOverlay').classList.add('show');
       document.getElementById('greedyVideo').play();
+
+      // Auto-close after 5 seconds
+      setTimeout(() => {
+        hideGreedyVideo();
+      }, 5000);
     }
 
     function hideGreedyVideo() {
